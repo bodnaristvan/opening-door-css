@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+
+    <style media="screen">
+      :root {
+        --scale-animation-length: 800ms;
+        --door-animation-length: 800ms;
+        --door-initial-opening-degree: 0deg;
+        --door-opening-degree: 70deg;
+      }
+      .item {
+        /* ekkora */
+        position: relative;
+        width: 300px;
+        height: 300px;
+
+        /* ettol 3d */
+        perspective: 30rem;
+        transform-style: preserve-3d;
+
+        /* ettol nez ki valahogy */
+        border: 2px solid rgba(0 0 0 / 80%);
+        box-shadow: 5px 5px 5px 0px rgb(0 0 0 / 30%);
+
+        /* ettol van a helyen */
+        margin: 15em auto 0;
+
+        transform: scale(1);
+        transition: transform var(--scale-animation-length) linear;
+      }
+      .item.open {
+        transform: scale(1);
+      }
+
+      .door {
+        /* ekkora */
+        position: absolute;
+        width: 300px;
+        height: 300px;
+
+        /* ettol 3d */
+        transition: transform var(--door-animation-length) ease-out;
+        /* a rotate forgatja, a translateZ meg kijavitja a safarit... */
+        transform: rotate3d(0, 1, 0, calc(-1 * var(--door-initial-opening-degree))) translateZ(1px);
+        transform-origin: left 0; /* hogy a bal sarok nyiljon */
+        transform-style: preserve-3d;
+        z-index: 2;
+
+        /* ettol nez ki ajtonak */
+        background-image: url(door.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        box-shadow: 6px 6px 12px 6px rgba(0, 0, 0, 0.5);
+      }
+      .open .door {
+        transform: rotate3d(0, 1, 0, calc(-1 * var(--door-opening-degree))) translateZ(1px);
+      }
+
+      .knob {
+        /* ettol van ott, ahol */
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        width:25px;
+        height: 25px;
+
+        /* kilincskinezet */
+        background-image: url(knob.png);
+        background-repeat: no-repeat;
+        background-size: cover;
+        /*
+        trukkfelvetel! mivel a kep egy gomb, minden nezetbol gomb lesz a nezo szemszogebol,
+        ezert az ajto mozgasaval ellentetesen kell animalni, hogy a nezovel mindig "szemben" legyen
+        */
+        transition: transform var(--door-animation-length) ease-out;
+        transform: rotate3d(0, 1, 0, 0) translate(0, 0) translateZ(1px);
+      }
+      .open .knob {
+        transform: rotate3d(0, 1, 0, var(--door-opening-degree)) translate(-50%, 0) translateZ(1px);
+      }
+
+      .present {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background-image: url(peekaboo.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        z-index: -1;
+      }
+    </style>
+  </head>
+  <body>
+
+
+      <section class="item">
+        <div class="door"><div class="knob"></div></div>
+        <div class="present"></div>
+      </section>
+
+      <script type="text/javascript">
+        const toggleOpen = (e) => {
+          e.target.closest('.item').classList.toggle('open');
+          e.stopPropagation();
+        }
+        const doors = document.querySelectorAll('.door, .knob');
+        doors.forEach((door) => {
+          door.addEventListener('click', toggleOpen);
+        })
+      </script>
+  </body>
+</html>
